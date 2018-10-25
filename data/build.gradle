@@ -1,0 +1,24 @@
+apply plugin: 'kotlin'
+
+targetCompatibility = 1.8
+sourceCompatibility = 1.8
+
+dependencies {
+    // Kotlin Stdlib
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion"
+
+    // ReactiveX
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rxKotlinVersion"
+
+    // Timber
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
+    implementation project(":domain")
+
+    // Testing
+    testImplementation "junit:junit:$jUnitVersion"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlinVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+}
