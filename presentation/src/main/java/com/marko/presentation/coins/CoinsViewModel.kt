@@ -34,6 +34,7 @@ class CoinsViewModel(
 
 	fun fetch() {
 		if (_coins.value == null) {
+			_loading.value = Event(true)
 			addDisposable {
 				getCoins(Unit)
 					.subscribe(
@@ -52,6 +53,7 @@ class CoinsViewModel(
 	}
 
 	fun fetchCoin(id: CoinId) {
+		_loading.value = Event(true)
 		addDisposable {
 			getCoin(id)
 				.subscribe(

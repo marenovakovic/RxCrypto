@@ -25,21 +25,19 @@ class CoinsCacheRepositoryImpl(
 
 	override fun getCoins(): Flowable<List<CoinEntity>> =
 		coinsDatabase.coinsDao().getCoins().map { it.toEntity() }
-			.doOnNext {
-				preferences.lastCacheTime = now
-			}
 
 	override fun getCoin(id: CoinId): Single<CoinEntity> =
 		coinsDatabase.coinsDao().getCoin(id).map { it.toEntity() }
 
 	override fun saveCoins(coins: List<CoinEntity>): Completable =
 		Completable.defer {
-			coinsDatabase.coinsDao().insertCoins(coins.toCache())
+			coinsDatabase.coinsDao().saveCoins(coins.toCache())
+			preferences.lastCacheTime = now
 			Completable.complete()
 		}
 
 	override var isCached: Single<Boolean>
-		get() = coinsDatabase.coinsDao().getCoins().isEmpty
+		get() = coinsDatabase.coinsDao().getCoins().first(listOf()).flatMap { Single.just(it.isNotEmpty()) }
 		set(value) {}
 
 	override var isCacheExpired: Boolean

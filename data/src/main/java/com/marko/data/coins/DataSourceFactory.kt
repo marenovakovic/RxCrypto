@@ -8,4 +8,7 @@ class DataSourceFactory(
 		get() =
 			if (! coinsCacheDataSource.isCacheExpired) coinsCacheDataSource
 			else coinsRemoteDataSource
+
+	val cacheDataSource: CoinsCacheDataSource
+		get() = coinsCacheDataSource
 }

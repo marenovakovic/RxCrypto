@@ -11,7 +11,7 @@ import io.reactivex.Single
 interface CoinsDao {
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
-	fun insertCoins(coins: List<CoinCache>)
+	fun saveCoins(coins: List<CoinCache>)
 
 	@Query("SELECT * FROM coins")
 	fun getCoins(): Flowable<List<CoinCache>>

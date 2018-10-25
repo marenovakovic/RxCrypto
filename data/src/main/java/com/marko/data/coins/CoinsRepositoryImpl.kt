@@ -7,12 +7,24 @@ import io.reactivex.Flowable
 import io.reactivex.Single
 
 class CoinsRepositoryImpl(
-	dataSourceFactory: DataSourceFactory
+	private val dataSourceFactory: DataSourceFactory
 ) : CoinsRepository {
 
 	private val dataSource = dataSourceFactory.dataSource
 
-	override fun getCoins(): Flowable<List<CoinEntity>> = dataSource.getCoins()
+	override fun getCoins(): Flowable<List<CoinEntity>> =
+		dataSourceFactory.cacheDataSource.isCached
+			.flatMapPublisher {
+				if (it) {
+					dataSource.getCoins()
+				} else {
+					dataSource.getCoins()
+						.flatMap {
+							dataSourceFactory.cacheDataSource.saveCoins(it)
+								.toSingle { it }.toFlowable()
+						}
+				}
+			}
 
 	override fun getCoin(id: CoinId): Single<CoinEntity> = dataSource.getCoin(id)
 }
