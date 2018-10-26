@@ -9,6 +9,7 @@ import org.reactivestreams.Publisher
 class AsyncFlowableTransformer<T> : FlowableTransformer<T>() {
 
 	override fun apply(upstream: Flowable<T>): Publisher<T> =
-			upstream.subscribeOn(Schedulers.io())
+			upstream
+				.subscribeOn(Schedulers.io())
 				.observeOn(AndroidSchedulers.mainThread())
 }

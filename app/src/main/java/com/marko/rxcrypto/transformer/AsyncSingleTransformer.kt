@@ -9,7 +9,8 @@ import io.reactivex.schedulers.Schedulers
 class AsyncSingleTransformer<T> : SingleTransformer<T>() {
 
 	override fun apply(upstream: Single<T>): SingleSource<T> =
-		upstream.subscribeOn(Schedulers.io())
-		.observeOn(AndroidSchedulers.mainThread())
+		upstream
+			.subscribeOn(Schedulers.io())
+			.observeOn(AndroidSchedulers.mainThread())
 
 }

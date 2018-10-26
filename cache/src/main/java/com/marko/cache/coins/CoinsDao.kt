@@ -19,6 +19,9 @@ interface CoinsDao {
 	@Query("SELECT * FROM coins WHERE id = :id")
 	fun getCoin(id: CoinId): Single<CoinCache>
 
+	@Query("SELECT count(*) FROM coins")
+	fun getCount(): Int
+
 	@Delete
 	fun deleteCoins(coins: List<CoinCache>)
 }

@@ -37,7 +37,7 @@ class CoinsCacheRepositoryImpl(
 		}
 
 	override var isCached: Single<Boolean>
-		get() = coinsDatabase.coinsDao().getCoins().first(listOf()).flatMap { Single.just(it.isNotEmpty()) }
+		get() = Single.defer { Single.just(coinsDatabase.coinsDao().getCount() > 0) }
 		set(value) {}
 
 	override var isCacheExpired: Boolean
