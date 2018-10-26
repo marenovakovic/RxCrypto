@@ -33,22 +33,20 @@ class CoinsViewModel(
 		get() = _error
 
 	fun fetch() {
-		if (_coins.value == null) {
-			_loading.value = Event(true)
-			addDisposable {
-				getCoins(Unit)
-					.subscribe(
-						{
-							_coins.value = it.toPresentation()
-							_loading.value = Event(false)
-						},
-						{
-							Timber.e(it)
-							_error.value = Event(it)
-							_loading.value = Event(false)
-						}
-					)
-			}
+		_loading.value = Event(true)
+		addDisposable {
+			getCoins(Unit)
+				.subscribe(
+					{
+						_coins.value = it.toPresentation()
+						_loading.value = Event(false)
+					},
+					{
+						Timber.e(it)
+						_error.value = Event(it)
+						_loading.value = Event(false)
+					}
+				)
 		}
 	}
 

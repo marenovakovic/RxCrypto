@@ -25,8 +25,18 @@ class CoinsListFragment : DaggerFragment() {
 		CoinsAdapter {
 			val action = CoinsListFragmentDirections.actionCoinsListFragmentToCoinDetailsFragment()
 			action.setCoinId(it)
-			Navigation.findNavController(activity !!, R.id.mainNavigationFragment).navigate(action)
+			Navigation.findNavController(activity !!, R.id.mainNavHostFragment).navigate(action)
 		}
+	}
+
+	override fun onCreate(savedInstanceState: Bundle?) {
+		super.onCreate(savedInstanceState)
+
+		viewModel.fetch()
+		viewModel.coins.observe(this, Observer { coinsAdapter.coins = it })
+		viewModel.loading.observe(this, EventObserver {
+			coinsProgressBar.beVisibleIf(it)
+		})
 	}
 
 	override fun onCreateView(
@@ -42,13 +52,5 @@ class CoinsListFragment : DaggerFragment() {
 			adapter = coinsAdapter
 			layoutManager = LinearLayoutManager(context).apply { isItemPrefetchEnabled = true }
 		}
-	}
-
-	override fun onActivityCreated(savedInstanceState: Bundle?) {
-		super.onActivityCreated(savedInstanceState)
-
-		viewModel.fetch()
-		viewModel.coins.observe(this, Observer { coinsAdapter.coins = it })
-		viewModel.loading.observe(this, EventObserver(coinsProgressBar::beVisibleIf))
 	}
 }
