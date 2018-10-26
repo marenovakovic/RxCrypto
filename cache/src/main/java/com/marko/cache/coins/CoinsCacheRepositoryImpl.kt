@@ -30,10 +30,9 @@ class CoinsCacheRepositoryImpl(
 		coinsDatabase.coinsDao().getCoin(id).map { it.toEntity() }
 
 	override fun saveCoins(coins: List<CoinEntity>): Completable =
-		Completable.defer {
+		Completable.fromAction {
 			coinsDatabase.coinsDao().saveCoins(coins.toCache())
 			preferences.lastCacheTime = now
-			Completable.complete()
 		}
 
 	override var isCached: Single<Boolean>
