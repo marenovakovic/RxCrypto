@@ -2,7 +2,6 @@ package com.marko.rxcrypto.home
 
 import android.os.Bundle
 import androidx.lifecycle.ViewModelProviders
-import androidx.navigation.fragment.NavHostFragment.findNavController
 import com.marko.presentation.coins.CoinsViewModel
 import com.marko.presentation.coins.CoinsViewModelFactory
 import com.marko.rxcrypto.R

@@ -3,7 +3,6 @@ package com.marko.cache.coins
 import androidx.room.*
 import com.marko.cache.entities.CoinCache
 import com.marko.domain.usecase.CoinId
-import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 
