@@ -8,6 +8,7 @@ abstract class BaseViewModel : ViewModel() {
 
 	private val disposables = CompositeDisposable()
 
+	@Synchronized
 	protected fun addDisposable(source: () -> Disposable) {
 		disposables.add(source())
 	}

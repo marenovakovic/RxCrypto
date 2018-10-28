@@ -2,6 +2,7 @@ package com.marko.presentation.coins
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.marko.domain.entities.CoinEntity
 import com.marko.domain.usecase.CoinId
 import com.marko.domain.usecase.GetCoin
 import com.marko.domain.usecase.GetCoins
@@ -9,6 +10,8 @@ import com.marko.presentation.base.BaseViewModel
 import com.marko.presentation.base.Event
 import com.marko.presentation.entities.Coin
 import com.marko.presentation.mappers.toPresentation
+import io.reactivex.observers.DisposableSingleObserver
+import io.reactivex.subscribers.DisposableSubscriber
 import timber.log.Timber
 
 class CoinsViewModel(
@@ -33,37 +36,52 @@ class CoinsViewModel(
 		get() = _error
 
 	fun fetch() {
-		_loading.value = Event(true)
 		addDisposable {
 			getCoins(Unit)
-				.subscribe(
-					{
-						_coins.value = it.toPresentation()
-						_loading.value = Event(false)
-					},
-					{
-						Timber.e(it)
-						_error.value = Event(it)
+				.subscribeWith(object : DisposableSubscriber<List<CoinEntity>>() {
+					override fun onStart() {
+						super.onStart()
+						_loading.value = Event(true)
+					}
+
+					override fun onNext(coins: List<CoinEntity>) {
+						_coins.value = coins.toPresentation()
 						_loading.value = Event(false)
 					}
-				)
+
+					override fun onError(t: Throwable) {
+						Timber.e(t)
+						_error.value = Event(t)
+						_loading.value = Event(false)
+					}
+
+					override fun onComplete() {
+						_loading.value = Event(false)
+					}
+				})
 		}
 	}
 
 	fun fetchCoin(id: CoinId) {
 		_loading.value = Event(true)
-		addDisposable {
-			getCoin(id)
-				.subscribe(
-					{
-						_coin.value = it.toPresentation()
-						_loading.value = Event(false)
-					},
-					{
-						_error.value = Event(it)
-						_loading.value = Event(false)
-					}
-				)
-		}
+
+		getCoin(id)
+			.subscribe(object : DisposableSingleObserver<CoinEntity>() {
+				override fun onSuccess(coins: CoinEntity) {
+					_coin.value = coins.toPresentation()
+					_loading.value = Event(false)
+				}
+
+				override fun onStart() {
+					super.onStart()
+					_loading.value = Event(true)
+				}
+
+				override fun onError(t: Throwable) {
+					Timber.e(t)
+					_error.value = Event(t)
+					_loading.value = Event(false)
+				}
+			})
 	}
 }
