@@ -68,14 +68,14 @@ class CoinsViewModel(
 		addDisposable {
 			getCoin(id)
 				.subscribeWith(object : DisposableSingleObserver<CoinEntity>() {
-					override fun onSuccess(coins: CoinEntity) {
-						_coin.value = coins.toPresentation()
-						_loading.value = Event(false)
-					}
-
 					override fun onStart() {
 						super.onStart()
 						_loading.value = Event(true)
+					}
+
+					override fun onSuccess(coins: CoinEntity) {
+						_coin.value = coins.toPresentation()
+						_loading.value = Event(false)
 					}
 
 					override fun onError(t: Throwable) {
