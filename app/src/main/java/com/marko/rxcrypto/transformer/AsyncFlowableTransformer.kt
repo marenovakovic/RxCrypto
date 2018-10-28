@@ -8,8 +8,11 @@ import org.reactivestreams.Publisher
 
 class AsyncFlowableTransformer<T> : FlowableTransformer<T>() {
 
+	// ne mora da se radi observeOn(AndroidSchedulers.mainThread()) cak je u ovom slucaju
+	// i pozeljno zato sto nema overhead prebacivanja sa thread-a na thread
+	// i pozivamo liveData.postValue umesto liveData.setValue
 	override fun apply(upstream: Flowable<T>): Publisher<T> =
-			upstream
-				.subscribeOn(Schedulers.io())
-				.observeOn(AndroidSchedulers.mainThread())
+		upstream
+			.subscribeOn(Schedulers.io())
+			.observeOn(AndroidSchedulers.mainThread())
 }
