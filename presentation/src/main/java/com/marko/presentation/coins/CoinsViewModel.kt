@@ -6,6 +6,7 @@ import com.marko.domain.entities.CoinEntity
 import com.marko.domain.usecase.CoinId
 import com.marko.domain.usecase.GetCoin
 import com.marko.domain.usecase.GetCoins
+import com.marko.domain.usecase.invoke
 import com.marko.presentation.base.BaseViewModel
 import com.marko.presentation.base.Event
 import com.marko.presentation.entities.Coin
@@ -37,7 +38,7 @@ class CoinsViewModel(
 
 	fun fetch() {
 		addDisposable {
-			getCoins(Unit)
+			getCoins()
 				.subscribeWith(object : DisposableSubscriber<List<CoinEntity>>() {
 					override fun onStart() {
 						super.onStart()
