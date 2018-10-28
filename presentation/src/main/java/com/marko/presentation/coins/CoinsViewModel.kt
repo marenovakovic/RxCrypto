@@ -65,23 +65,25 @@ class CoinsViewModel(
 	fun fetchCoin(id: CoinId) {
 		_loading.value = Event(true)
 
-		getCoin(id)
-			.subscribe(object : DisposableSingleObserver<CoinEntity>() {
-				override fun onSuccess(coins: CoinEntity) {
-					_coin.value = coins.toPresentation()
-					_loading.value = Event(false)
-				}
+		addDisposable {
+			getCoin(id)
+				.subscribeWith(object : DisposableSingleObserver<CoinEntity>() {
+					override fun onSuccess(coins: CoinEntity) {
+						_coin.value = coins.toPresentation()
+						_loading.value = Event(false)
+					}
 
-				override fun onStart() {
-					super.onStart()
-					_loading.value = Event(true)
-				}
+					override fun onStart() {
+						super.onStart()
+						_loading.value = Event(true)
+					}
 
-				override fun onError(t: Throwable) {
-					Timber.e(t)
-					_error.value = Event(t)
-					_loading.value = Event(false)
-				}
-			})
+					override fun onError(t: Throwable) {
+						Timber.e(t)
+						_error.value = Event(t)
+						_loading.value = Event(false)
+					}
+				})
+		}
 	}
 }
